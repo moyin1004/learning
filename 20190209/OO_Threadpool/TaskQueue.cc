@@ -4,7 +4,6 @@
  
 #include "TaskQueue.h"
 #include <iostream>
-#include <unistd.h> 
 
 using std::cout;
 using std::endl;
@@ -17,6 +16,7 @@ TaskQueue::TaskQueue(size_t size)
 , _mutex()
 , _notFull(_mutex)
 , _notEmpty(_mutex)
+, _used(true)
 {}
 
 bool TaskQueue::full() const {
@@ -27,29 +27,33 @@ bool TaskQueue::empty() const {
     return _que.empty();
 }
 
-void TaskQueue::push(int number) {
+void TaskQueue::push(const TaskType &t) {
     _mutex.lock();
     while (full()) {
         _notFull.wait();
     }
 
-    _que.push(number);
-    sleep(1);
+    _que.push(t);
     _notEmpty.notify();
     _mutex.unlock();
 }
 
-int TaskQueue::pop() {
+TaskType TaskQueue::pop() {
     _mutex.lock();
-    while (empty()) {
+    while (_used && empty()) {
         _notEmpty.wait();
     }
-    int ret = _que.front();
+    TaskType ret = _que.front();
     _que.pop();
     _notFull.notify();
     _mutex.unlock();
 
     return ret;
+}
+
+void TaskQueue::wakeup() {
+    if (_used) _used = false;
+    _notEmpty.notifyAll();
 }
 
 } //end of namespace wd

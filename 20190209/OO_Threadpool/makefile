@@ -7,18 +7,18 @@ SRCS:= $(wildcard $(SRC_DIR)*.cc $(TEST_DIR)*.cc)
 OBJS:= $(patsubst %.cc, %.o, $(SRCS))
 CXXFLAGS:= -g $(addprefix -I, $(INC_DIR))
 
-LIBS:= -lpthead
+LIBS:= -lpthread
 
-BIN:= ./bin/test.out
+BIN:= test.out
 
 %.o:%.cc
 	$(CC) -o $@ -c $< $(CXXFLAGS)
 
 $(BIN):$(OBJS)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(LIBS)
 
 run:
-	./bin/test.out
+	.test.out
 
 print:
 	@echo $(OBJS)

@@ -11,21 +11,26 @@
 
 namespace wd {
 
+class Task;
+using TaskType = Task*;
+
 class TaskQueue {
 public:
     TaskQueue(size_t size);
 
     bool full() const;
     bool empty() const;
-    void push(int number);
-    int pop();
+    void push(const TaskType &);
+    TaskType pop();
+    void wakeup();
 
 private:
     size_t _queSize;
-    std::queue<int> _que;
+    std::queue<TaskType> _que;
     MutexLock _mutex;
     Condition _notFull;
     Condition _notEmpty;
+    bool _used;
 };
 
 } //end of namespace wd
