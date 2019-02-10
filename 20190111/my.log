@@ -1,0 +1,4 @@
+2019-01-17 16:05:53,342 mylog [ERROR] [test.cc , main , 12] this is an error
+2019-01-17 16:05:53,343 mylog [INFO] [test.cc , main , 13] this is an info
+2019-01-17 16:05:53,343 mylog [WARN] [test.cc , main , 14] this is a warn
+2019-01-17 16:05:53,343 mylog [DEBUG] [test.cc , main , 15] this is a debug

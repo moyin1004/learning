@@ -1,0 +1,12 @@
+  509  cd staticlib/
+  510  l
+  511  gcc -c multi.c
+  512  ls
+  513  ar crsv libmulti.a multi.o
+  514  ls
+  515  gcc main.c -lmulti -L.
+  516  ls
+  517  a.out
+  518  ./a.out 
+  519  tail history > history_s.txt
+  520  history > history_s.txt

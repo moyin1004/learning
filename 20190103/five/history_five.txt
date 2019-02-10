@@ -1,0 +1,37 @@
+  428  sed -n "1,10p" The_Holy_Bible.txt > new
+  429  ls
+  430  vim new
+  431  ls
+  432  mkdir homework
+  433  ls
+  434  mv new homework/
+  435  ls
+  436  cd homework/
+  437  ls
+  438  mv new new10_Bible.txt
+  439  vim new10_Bible.txt 
+  440  touch authority1.txt
+  441  ls
+  442  chmod 644 authority1.txt 
+  443  ls -al
+  444  vim authority2.txt
+  445  vim authority1.txt
+  446  chmod 666 authority2.txt 
+  447  ls
+  448  ls -al
+  449  vim five.c
+  450  mkdir five
+  451  ls
+  452  mv five.c five
+  453  cd five/
+  454  ls
+  455  gcc -E five.c -o five.i
+  456  ld
+  457  ls
+  458  gcc -S five.i -o five.s
+  459  as five.s -o five.o
+  460  ls
+  461  gcc five.o -o five.exe
+  462  ls
+  463  ./five.exe 
+  464  history > history_five.txt

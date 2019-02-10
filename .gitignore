@@ -1,0 +1,8 @@
+*.out
+*.o
+*.tar.gz
+*.exe
+*.docx
+*.doc
+*.md
+!README.md

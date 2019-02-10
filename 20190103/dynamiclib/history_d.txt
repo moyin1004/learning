@@ -1,0 +1,31 @@
+  527  ls
+  528  cd dynamiclib/
+  529  ls
+  530  gcc -fPIC -c multi.c
+  531  ls
+  532  gcc -shared -o libmulti.so multi.o
+  533  ls
+  534  gcc main.c -lmulti -L.
+  535  ls
+  536  ./a.out
+  537  sudo ldconfig
+  538  ./a.out
+  539  cd /usr/local/lib/
+  540  ls
+  541  cd /etc/ld.so.conf.d
+  542  ls
+  543  ls -al
+  544  vim lib.conf
+  545  ls
+  546  vim libc.conf 
+  547  cd ~/wdtext/homework/dynamiclib/
+  548  ls
+  549  sudo cp libmulti.so /usr/local/lib/
+  550  sudo ldconfig
+  551  ./a.out
+  552  cd ..
+  553  cd staticlib/
+  554  ls
+  555  cd -
+  556  cd dynamiclib/
+  557  history > history_d.txt

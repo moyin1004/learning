@@ -1,0 +1,7 @@
+2019-01-20 14:12:14,575 mylog [ERROR] [test.cc , main , 14] this is an error. num = 100 str = hello
+
+2019-01-20 14:12:14,576 mylog [INFO] [test.cc , main , 15] this is an info
+2019-01-20 14:12:14,578 mylog [WARN] [test.cc , main , 16] this is a warn
+2019-01-20 14:12:14,578 mylog [DEBUG] [test.cc , main , 17] this is a debug
+2019-01-20 14:12:14,580 mylog [ERROR] [test.cc , main , 21] this is an error. num = 100 str = hello
+
