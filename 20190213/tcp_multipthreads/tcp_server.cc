@@ -40,6 +40,8 @@ public:
     , _port(port)
     {}
 
+    ~ServerThread() {}
+
     void run() {
         cout << "main thread create subthread : " << pthread_self() << endl;
         struct sockaddr_in clientaddr;
