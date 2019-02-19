@@ -36,7 +36,7 @@ Server::Server()
 
 void Server::setReuseAddr(int on) {
     int reuse = on;
-    //将网络地址设置成可以重用的
+    //将socket成可以重用的
     if (setsockopt(_listenfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int))) {
         ERROR_EXIT("setsockopt");
     }
@@ -53,7 +53,7 @@ void Server::setReusePort(int on) {
 void Server::startServer(const string &ip, unsigned short port) {
     cout << ">> server listened = " << _listenfd << endl;
     setReuseAddr(1);
-    setReusePort(1);
+    //setReusePort(1);
     
     bindInetAddr(_listenfd, ip, port);
     myListen(_listenfd);

@@ -22,7 +22,7 @@ public:
 
 private:
     void selectFdsInit(int &, fd_set *); //初始化fd_set集合
-    void setReuseAddr(int on); //设置网络地址重用
+    void setReuseAddr(int on); //设置socket重用
     void setReusePort(int on); //设置端口复用
     void setNonBlock(int fd);
     void printConnectionInfo(int peerfd);
