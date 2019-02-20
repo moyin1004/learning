@@ -64,7 +64,7 @@ InetAddress TcpConnection::localInetAddr() {
 InetAddress TcpConnection::peerInetAddr() {
     struct sockaddr_in peeraddr;
     socklen_t len = sizeof(struct sockaddr_in);
-    int ret = ::getsockname(_sock.fd(), (struct sockaddr*)&peeraddr, &len);
+    int ret = ::getpeername(_sock.fd(), (struct sockaddr*)&peeraddr, &len);
     if (ret == -1) logError(">> getpeername");
     return InetAddress(peeraddr);
 }

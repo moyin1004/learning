@@ -14,7 +14,7 @@ public:
 
     ~Socket();
     int fd() const;
-    void nonblock();
+    void nonblock(); 
     void shutdownWrite();
 
 private:
