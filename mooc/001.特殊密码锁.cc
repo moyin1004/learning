@@ -15,23 +15,22 @@ void setBit(int &value, int i) {
 }
 
 //枚举，当前的位置的状态与目标的同一位置不一致时，需要按下一位改变
+//考虑边界调节。首位需要改变自己
 int change(int current, int target, int length) {
     if (current == target) return 0;
     int count = 0;
-    for (int i = 0; i < length - 2; ++i) {
+    for (int i = 0; i < length; ++i) {
         if (getBit(current, i) != getBit(target, i)) {
             ++count;
             setBit(current, i + 1);
-            setBit(current, i + 2);
+            if (i == length - 1) return -1;
+            if (i == 0) {
+                setBit(current, i);
+            }
+            else if (i != length - 2) {
+                setBit(current, i + 2);
+            }
         }
-    } 
-    if (getBit(current, length - 2) != getBit(target, length - 2) &&
-        getBit(current, length - 1) != getBit(target, length - 1))
-    {    
-        ++count;
-    }
-    else {
-        return -1;
     }
     return count;
 }
