@@ -6,7 +6,7 @@
  
 using namespace std;
 
-int getBit(int value, int i) {
+bool getBit(int value, int i) {
     return (value >> i) & 1;
 }
 
@@ -18,21 +18,49 @@ void setBit(int &value, int i) {
 //考虑边界调节。首位需要改变自己
 int change(int current, int target, int length) {
     if (current == target) return 0;
-    int count = 0;
+    int cur = current;
+    int count1 = 0;
     for (int i = 0; i < length; ++i) {
-        if (getBit(current, i) != getBit(target, i)) {
-            ++count;
-            setBit(current, i + 1);
-            if (i == length - 1) return -1;
+        if (getBit(cur, i) != getBit(target, i)) {
             if (i == 0) {
-                setBit(current, i);
+                setBit(cur, i);
+                setBit(cur, i + 1);
+                ++count1;
             }
-            else if (i != length - 2) {
-                setBit(current, i + 2);
+            else if (i == length - 1) count1 = -1;
+            else if (i == length - 2) {
+                setBit(cur, i + 1);
+                ++count1;
+            }
+            else {
+                setBit(cur, i + 1);
+                setBit(cur, i + 2);
+                ++count1;
             }
         }
     }
-    return count;
+    int count2 = 1;
+    cur = current;
+    setBit(cur, 0);
+    setBit(cur, 1);
+    for (int i = 0; i < length; ++i) {
+        if (getBit(cur, i) != getBit(target, i)) {
+            if (i == length - 1) count2 = -1;
+            else if (i == length - 2) {
+                setBit(cur, i + 1);
+                ++count2;
+            }
+            else {
+                setBit(cur, i + 1);
+                setBit(cur, i + 2);
+                ++count2;
+            }
+        }
+    }
+    if (count1 == -1 && count2 != -1) return count2;
+    else if (count1 != -1 && count2 == -1) return count1;
+    else if (count1 == -1 && count2 == -1) return -1;
+    else return count1 > count2 ? count2 : count1;
 }
 
 int main() {
