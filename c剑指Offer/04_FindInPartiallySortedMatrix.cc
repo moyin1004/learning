@@ -11,15 +11,15 @@ public:
     bool Find(int target, vector<vector<int> > array) {
         if (array.size() <= 0) return false;
 
-        for (size_t i = 0; i < array.size();) {
-            for (int j = array[0].size() - 1; j >= 0;) {
-                if (array[i][j] == target) return true;
-                else if (array[i][j] > target) {
-                    --j;
-                }
-                else if (array[i][j] < target) {
-                    ++i;
-                }
+        size_t i = 0;
+        int j = array[0].size() - 1;
+        while (i < array.size() && j >=0) { //一重循环即可
+            if (array[i][j] == target) return true;
+            else if (array[i][j] > target) {
+                --j;
+            }
+            else if (array[i][j] < target) {
+                ++i;
             }
         }
         return false;
