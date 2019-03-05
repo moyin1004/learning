@@ -25,9 +25,10 @@ public:
                 str[--newsize] = '0';
                 str[--newsize] = '2';
                 str[--newsize] = '%';
-                --i;
             }
-            str[--newsize] = str[i];
+            else {
+                str[--newsize] = str[i]; //不能在if中--if防止多个空格
+            }
         }
     }
 };
