@@ -27,7 +27,7 @@ public:
                 str[--newsize] = '%';
             }
             else {
-                str[--newsize] = str[i]; //不能在if中--if防止多个空格
+                str[--newsize] = str[i]; //不能在if中--i直接移动字符 用else防止多个空格
             }
         }
     }
