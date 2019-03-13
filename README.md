@@ -15,6 +15,6 @@ Learning C++ now.
 * inheritance pratice : [20190128](https://github.com/moyin1004/learning/tree/master/TimeLine/20190128)
 * linux pthread : [20190203](https://github.com/moyin1004/learning/tree/master/TimeLine/20190203)
 
-# Python
+# [Python](https://github.com/moyin1004/python-learn)
 
 ---
