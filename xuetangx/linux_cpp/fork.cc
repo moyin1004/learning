@@ -33,6 +33,7 @@ int main() {
         cout << "the child's process ID is " << (int)child_pid << endl;
         sleep(1);
         cout << "child_exit_status: " << child_exit_status << endl;
+        if (WIFEXITED(child_exit_status)) cout << "Exited normally with " << WEXITSTATUS(child_exit_status) << endl;
     }
     else { //子进程中运行
         //sleep(2);

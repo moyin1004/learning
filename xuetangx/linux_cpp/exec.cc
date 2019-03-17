@@ -16,16 +16,16 @@ using std::endl;
 int spawn(char *program, char **args) {
     pid_t pid = fork();
     if (pid != 0) {
-        sleep(1);
-        cout << "wait child pid: " << wait(NULL) << endl;
+        return pid;
+        //int status;
+        //cout << "childpid exit status: " << status << endl;
     }
     else {
+        sleep(1);
         execvp(program, args);
         std::cerr << "Error occurred when executing execvp.\n";
         abort();
     }
-    cout << "child pid = " << pid << endl;
-    return pid;
 }
 
 int main() {
@@ -33,7 +33,13 @@ int main() {
     char s2[] = "-l";
     char s3[] = "/";
     char *args[] = {s1, s2, s3, NULL};
-    spawn(s1, args);
+    int pid = spawn(s1, args);
+    int status;
+    wait(&status);
+    cout << "child_pid: " << pid << endl;
+    //判断进程是否正常退出
+    if (WIFEXITED(status)) cout << "Exited normally with " << WEXITSTATUS(status) << endl;
+    else cout << "nonormally" << endl;
     cout << "Done\n";
     return 0;
 }
