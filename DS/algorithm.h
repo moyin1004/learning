@@ -1,0 +1,22 @@
+#ifndef __ALGORITHM__
+#define __ALGORITHM__
+
+#include "type.h"
+#include "linked_list.h"
+
+int FindMid(ElemType a[], ElemType b[], int n);
+int FindMajority(int a[], int n);
+
+// 线性表
+// 分解链表
+LinkList DisCreat_1(LinkList &A);
+LinkList DisCreat_2(LinkList &A);
+// 使链表无重复元素
+void DeleteSame(LinkList &L);
+// 归并链表
+LinkList MergeList(LinkList &A, LinkList &B);
+// 合并循环链表
+LinkList Union(LinkList &h1, LinkList &h2);
+LNode *Locate(LinkList &L, ElemType e);
+
+#endif
