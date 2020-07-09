@@ -9,6 +9,19 @@ void Reverse(int A[], int l, int r) {
     }
 }
 
+int BinarySearch(int A[], int n, int x) {
+    int l = 0;
+    int r = n;
+    int mid = 0;
+    while (l < r) {
+        mid = l + (r - l) / 2;
+        if (x == A[mid]) break;
+        else if (x > A[mid]) l = mid+1;
+        else r = mid;
+    }
+    return A[mid] == x ? mid : -1;
+}
+
 void SearchInsert(int A[], int n, int x) {
     int l = 0;
     int r = n;
@@ -29,3 +42,18 @@ void SearchInsert(int A[], int n, int x) {
         Print(A, n+1);
     }
 }
+
+int Search_Seq(SeqList S, ElemType x) {
+    int i = 0;
+    for (i = 0; i < S.length && S.data[i] != x; ++i);
+    return i == S.length ? -1 : i;
+}
+
+#if 0
+int Search_Seq(SeqList S, ElemType x) {
+    S.data[0] = key; // 哨兵
+    int i = 0;
+    for (i = S.length; S.data[i] != x; --i);
+    return i;
+}
+#endif

@@ -3,6 +3,7 @@
 
 #include "type.h"
 #include "linked_list.h"
+#include "tree.h"
 
 int FindMid(ElemType a[], ElemType b[], int n);
 int FindMajority(int a[], int n);
@@ -18,5 +19,8 @@ LinkList MergeList(LinkList &A, LinkList &B);
 // 合并循环链表
 LinkList Union(LinkList &h1, LinkList &h2);
 LNode *Locate(LinkList &L, ElemType e);
+
+// 根据先序遍历和中序遍历建立二叉链表
+BiTree CreatBTreeByOrder(int preorder[], int inorder[], int n);
 
 #endif

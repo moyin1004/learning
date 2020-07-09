@@ -30,6 +30,7 @@ void PostOrder(BiTree BT);           // 后序非递归
 void PostOrderTraversal(BiTree BT);  // 后序递归
 void LevelOrderTraversal(BiTree BT); // 层序遍历
 int TreeDeepth(BiTree T);
+void DestoryTree(BiTree &T);
 
 /**
  * 线索二叉树
@@ -59,7 +60,6 @@ typedef BiNode AVLNode;
 typedef BiTree AVLTree;
 
 AVLTree Insert(AVLTree T, ElemType X);
-void DestoryAVL(AVLTree &T);
 
 
 // 树的双亲表示法（顺序存储）

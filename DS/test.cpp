@@ -9,6 +9,7 @@
 #include "search.h"
 #include "algorithm.h"
 #include "tree.h"
+#include "sort.h"
 using namespace std;
 
 void test_linked_list() {
@@ -116,7 +117,53 @@ void test_avl_tree() {
     cout << endl;
     InOrder(T);
     PreOrder(T);
-    DestoryAVL(T);
+    PostOrder(T);
+    DestoryTree(T);
+}
+
+void test_CreatBTreeByOrder() {
+    int a[] = {4, 3, 10, 7, 8, 11, 5, 21, 20};
+    int b[] = {7, 10, 8, 3, 4, 5, 21, 11, 20};
+    BiTree T = CreatBTreeByOrder(a, b, 9);
+    PreOrder(T);
+    InOrder(T);
+    DestoryTree(T);
+}
+
+void test_Sort() {
+    cout << "=======================sort====================" << endl;
+    int num = 11;
+    int a[] = {7, 10, 8, 4, 3, 4, 5, 21, 11, 11, 20};
+    int b[10];
+    cout << "============InsertSort==========" << endl;
+    Copy(a, b, num);
+    InsertSort(b, num);
+    Print(b, num);
+    cout << "============ShellSort==========" << endl;
+    Copy(a, b, num);
+    ShellSort(b, num);
+    Print(b, num);
+    cout << "============BubbleSort==========" << endl;
+    Copy(a, b, num);
+    BubbleSort(b, num);
+    Print(b, num);
+    cout << "============QuickSort==========" << endl;
+    Copy(a, b, num);
+    QuickSort(b, 0, num-1);
+    Print(b, num);
+    cout << "============SelectSort==========" << endl;
+    Copy(a, b, num);
+    SelectSort(b, num);
+    Print(b, num);
+    cout << "============HeapSort==========" << endl;
+    Copy(a, b, num);
+    HeapSort(b, num);
+    Print(b, num);
+    cout << "============MergeSort==========" << endl;
+    Copy(a, b, num);
+    MergeSort(b, 0, num);
+    Print(b, num);
+    cout << "=======================sort====================" << endl;
 }
 
 int main() {
@@ -130,6 +177,8 @@ int main() {
     // test_search_insert();
     // test_find_majority();
     // test_find_mid();
-    test_avl_tree();
+    // test_avl_tree();
+    // test_CreatBTreeByOrder();
+    test_Sort();
     return 0;
 }

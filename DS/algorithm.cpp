@@ -310,3 +310,21 @@ DNode *Locate(DLinkList &L, ElemType e) {
     int _1n;
     return p;
 }
+
+void CreatBTree(BiTree &T, int preorder[], int &pos, int n, int inorder[], int l, int r) {
+    if (l > r) return ;
+    T = (BiNode*)malloc(sizeof(BiNode));
+    int mid = l;
+    while (mid <= r && preorder[pos] != inorder[mid]) ++mid;
+    T->data = inorder[mid];
+    T->left = T->right = NULL;
+    ++pos;
+    CreatBTree(T->left, preorder, pos, n, inorder, l, mid-1);
+    CreatBTree(T->right, preorder, pos, n, inorder, mid+1, r);
+}
+BiTree CreatBTreeByOrder(int preorder[], int inorder[], int n) {
+    int pos = 0;
+    BiTree T;
+    CreatBTree(T, preorder, pos, n-1, inorder, 0, n-1);
+    return T;
+}

@@ -6,3 +6,9 @@ void Print(int A[], int n) {
     }
     cout << endl;
 }
+
+void Copy(int a[], int b[], int n) {
+    for (int i = 0; i < n; ++i) {
+        b[i] = a[i];
+    }
+}

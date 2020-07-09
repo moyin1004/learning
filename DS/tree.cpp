@@ -70,7 +70,30 @@ void PostOrderTraversal(BiTree BT) {
 }
 
 void PostOrder(BiTree BT) {
-
+    if (!BT) return ;
+    stack<BiNode *> S;
+    BiNode *p = BT;
+    BiNode *r = NULL;
+    while (p || !S.empty()) {
+        if (p) {
+            S.push(p);
+            p = p->left;
+            continue;
+        }
+        p = S.top();
+        if (p->right && p->right != r) {
+            p = p->right;
+            S.push(p);
+            p = p->left;
+        }
+        else {
+            cout << p->data << " ";
+            r = p;
+            S.pop();
+            p = NULL;
+        }
+    }
+    cout << endl;
 }
 
 void LevelOrderTraversal(BiTree BT) { 
@@ -92,6 +115,15 @@ int TreeDeepth(BiTree T) {
     int l = TreeDeepth(T->left);
     int r = TreeDeepth(T->right);
     return l>r ? l+1 : r+1;
+}
+
+void DestoryTree(BiTree &T) {
+    if (!T) return;
+    DestoryTree(T->left);
+    DestoryTree(T->right);
+    cout << T->data << " ";
+    free(T);
+    T = NULL;
 }
 
 
@@ -388,15 +420,6 @@ AVLTree Insert(AVLTree T, ElemType X) {
     T->height = max(GetHeight(T->left), GetHeight(T->right)) + 1;
 
     return T;
-}
-
-void DestoryAVL(AVLTree &T) {
-    if (!T) return;
-    DestoryAVL(T->left);
-    DestoryAVL(T->right);
-    cout << T->data << " ";
-    free(T);
-    T = NULL;
 }
 
 #if 0
