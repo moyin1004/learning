@@ -10,6 +10,7 @@
 #include "algorithm.h"
 #include "tree.h"
 #include "sort.h"
+#include "graph.h"
 using namespace std;
 
 void test_linked_list() {
@@ -122,16 +123,25 @@ void test_avl_tree() {
 }
 
 void test_CreatBTreeByOrder() {
-    int a[] = {4, 3, 10, 7, 8, 11, 5, 21, 20};
-    int b[] = {7, 10, 8, 3, 4, 5, 21, 11, 20};
+    cout << "======" << __FUNCTION__ << "=======" << endl;
+    int a[] = {4, 3, 10, 7, 8, 11, 5, 21, 10};
+    int b[] = {7, 10, 8, 3, 4, 5, 21, 11, 10};
     BiTree T = CreatBTreeByOrder(a, b, 9);
     PreOrder(T);
     InOrder(T);
+    PostOrder(T);
+
+    DeleteXTree(T, 10);
+    PreOrder(T);
+    InOrder(T);
+    PostOrder(T);
+
     DestoryTree(T);
+    cout << "====================================" << endl;
 }
 
 void test_Sort() {
-    cout << "=======================sort====================" << endl;
+    cout << "======" << __FUNCTION__ << "=======" << endl;
     int num = 11;
     int a[] = {7, 10, 8, 4, 3, 4, 5, 21, 11, 11, 20};
     int b[10];
@@ -163,7 +173,19 @@ void test_Sort() {
     Copy(a, b, num);
     MergeSort(b, 0, num);
     Print(b, num);
-    cout << "=======================sort====================" << endl;
+    cout << "=============================================" << endl;
+}
+
+void test_Graph() {
+    cout << "======" << __FUNCTION__ << "=======" << endl;
+    Graph G = BuildGraph();
+    BFS(G, 0);
+    cout << endl;
+    DFSTraverse(G);
+    cout << endl;
+    Dijkstra(G, 0);
+    cout << endl;
+    DestoryGraph(G);
 }
 
 int main() {
@@ -179,6 +201,7 @@ int main() {
     // test_find_mid();
     // test_avl_tree();
     // test_CreatBTreeByOrder();
-    test_Sort();
+    // test_Sort();
+    test_Graph();
     return 0;
 }

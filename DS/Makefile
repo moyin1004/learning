@@ -6,7 +6,7 @@ SRCS:= $(wildcard $(SRC_DIR)*.cpp)
 OBJS:= $(patsubst %.cpp, %.o, $(SRCS))
 
 CXX:= g++
-CXXFLAGS:= -c -g $(addprefix -I, $(INC_DIR))
+CXXFLAGS:= -c -g -std=c++17 $(addprefix -I, $(INC_DIR))
 
 EXE:= ./test.out
 

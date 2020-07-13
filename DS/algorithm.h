@@ -20,7 +20,20 @@ LinkList MergeList(LinkList &A, LinkList &B);
 LinkList Union(LinkList &h1, LinkList &h2);
 LNode *Locate(LinkList &L, ElemType e);
 
+
+// 树
 // 根据先序遍历和中序遍历建立二叉链表
 BiTree CreatBTreeByOrder(int preorder[], int inorder[], int n);
+// 删除以x为根的子树
+void DeleteXTree(BiTree &T, ElemType x);
+// 最近公共祖先
+BiNode* LowestCommonAncestor(BiNode* root, BiNode* p, BiNode* q);
+
+
+// 图
+
+// 查找
+
+// 排序
 
 #endif

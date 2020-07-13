@@ -1,4 +1,4 @@
-#include "string.h"
+#include "ds_string.h"
 
 void StrAssign(SString &T, char s[]);
 void StrCopy(SString &T, SString S);

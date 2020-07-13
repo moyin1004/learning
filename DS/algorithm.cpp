@@ -1,5 +1,6 @@
 #include "algorithm.h"
 #include "stack.h"
+#include <stack>
 
 // static int tran_op(char op) {
 //     if (op == '+' || op == '-') return 1;
@@ -327,4 +328,63 @@ BiTree CreatBTreeByOrder(int preorder[], int inorder[], int n) {
     BiTree T;
     CreatBTree(T, preorder, pos, n-1, inorder, 0, n-1);
     return T;
+}
+
+// 删除以x为根的子树，也可采用层次遍历进行删除
+void DeleteXTree(BiTree &T, ElemType x) {
+    if (!T) return ;
+    if (T->data == x) {
+        DestoryTree(T);
+        T = NULL;
+        return ;
+    }
+    DeleteXTree(T->left, x);
+    DeleteXTree(T->right, x);
+}
+
+bool FindBiNode(BiTree T, BiNode *p) {
+    if (!T) return false;
+    if (T == p) return false;
+    if (FindBiNode(T->left, p) || FindBiNode(T->right, p))
+        return true;
+    return false;
+}
+
+// 最近公共祖先
+BiNode* LowestCommonAncestor(BiNode* root, BiNode* p, BiNode* q) {
+    if (!root) return NULL;
+    stack<BiNode *> s;
+    BiNode *r, *bt = root;
+    // 后序遍历
+    while (bt || !s.empty()) {
+        while (bt && bt != q && bt != p) {
+            s.push(bt);
+            bt = bt->left;
+        }
+        if (bt == q || bt == p) {
+            if (bt == q) swap(p, q);
+            break;
+        }
+        bt = s.top();
+        if (bt->right && bt->right != r) {
+            bt = bt->right;
+        }
+        else {
+            r = bt;
+            bt = NULL;
+            s.pop();
+        }
+    }
+    // 寻找祖先结点
+    if (FindBiNode(p, q)) return p;
+    r = p;
+    while (!s.empty()) {
+        bt = s.top();
+        s.pop();
+        if (bt->right != r && FindBiNode(bt->right, q)) {
+            return bt;
+        }
+        r = bt;
+    }
+    return NULL;
 }

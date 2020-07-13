@@ -75,16 +75,14 @@ void PostOrder(BiTree BT) {
     BiNode *p = BT;
     BiNode *r = NULL;
     while (p || !S.empty()) {
-        if (p) {
+        while (p) {
             S.push(p);
             p = p->left;
-            continue;
+            // continue;
         }
         p = S.top();
         if (p->right && p->right != r) {
             p = p->right;
-            S.push(p);
-            p = p->left;
         }
         else {
             cout << p->data << " ";
@@ -121,7 +119,7 @@ void DestoryTree(BiTree &T) {
     if (!T) return;
     DestoryTree(T->left);
     DestoryTree(T->right);
-    cout << T->data << " ";
+    // cout << T->data << " ";
     free(T);
     T = NULL;
 }
