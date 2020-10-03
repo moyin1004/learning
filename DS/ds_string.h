@@ -16,8 +16,8 @@ void ClearString(SString &S);
 void DestoryString(SString &S);
 bool Concat(SString &T, SString &S1, SString &S2);
 bool SubString(SString &Sub, SString S, int pos, int len);
-int Index(SString S, SString T);      // KMP
-int StrCompare(SString S, SString T); // S > T return > 0; S < T return < 0;
+int StrIndex(SString &S, SString &T);      // KMP
+int StrCompare(SString &S, SString &T); // S > T return > 0; S < T return < 0;
 
 typedef struct {
     char *ch;
@@ -32,7 +32,7 @@ void ClearString(HString &S);
 void DestoryString(HString &S);
 bool Concat(HString &T, HString &S1, HString &S2);
 bool SubString(HString &Sub, HString S, int pos, int len);
-int Index(HString S, HString T);      // KMP
+int StrIndex(HString S, HString T);      // KMP
 int StrCompare(HString S, HString T); // S > T return > 0; S < T return < 0;
 
 typedef struct StringNode {
@@ -40,5 +40,8 @@ typedef struct StringNode {
     char ch[4];
     struct StringNode *next;
 } StringNode, *String;
+
+void BuildNext(SString &T);
+void BuildNextval(SString &T);
 
 #endif

@@ -16,6 +16,9 @@ EXE:= ./test.out
 $(EXE):$(OBJS)
 	$(CXX) -o $@ $^
 
+run:
+	$(EXE)
+
 print:
 	@echo $(SRCS)
 	@echo $(OBJS)

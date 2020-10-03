@@ -1,6 +1,12 @@
 #include "ds_string.h"
 
-void StrAssign(SString &T, char s[]);
+void StrAssign(SString &T, char s[]) {
+    int i = 0;
+    while (s[i] != 0) {
+        T.ch[T.length++] = s[i++];
+    }
+}
+
 void StrCopy(SString &T, SString S);
 bool StrEmpty(SString &S) {
     return (S.length == 0);
@@ -28,11 +34,33 @@ bool SubString(SString &Sub, SString S, int pos, int len) {
     return true;
 }
 
-int Index(SString S, SString T) {      // KMP
+// KMP
+int Next[MAXLEN];
+void BuildNext(SString &T) {
+    int i = 0;
+    int cnt = Next[0] = -1;
+    while (i < T.length) {
+        (0 > cnt || T.ch[cnt] == T.ch[i]) ? Next[++i] = ++cnt : cnt = Next[cnt];
+    }
+}
+void BuildNextval(SString &T) {
+    int i = 0;
+    int cnt = Next[0] = -1;
+    while (i < T.length) {
+        if (cnt < 0 || T.ch[cnt] == T.ch[i]) {
+            ++i; ++cnt;
+            Next[i] = T.ch[cnt] != T.ch[i] ? cnt : Next[cnt];
+        }
+        else {
+            cnt = Next[cnt];
+        }
+    }
+}
+int StrIndex(SString &T) {
     return 1;
 }
 
-int StrCompare(SString S, SString T) { // S > T return > 0; S < T return < 0;
+int StrCompare(SString &S, SString &T) { // S > T return > 0; S < T return < 0;
     for (int i = 0; i < S.length && i < T.length; ++i) {
         if (T.ch[i] != S.ch[i]) {
             return S.ch[i] - T.ch[i];

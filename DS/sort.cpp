@@ -34,6 +34,7 @@ void BubbleSort(int A[], int n) {
     }
 }
 
+// 快排
 void QSort(int A[], int l, int r) {
     if (l >= r) return ;
     int bound = A[l];
@@ -47,6 +48,7 @@ void QSort(int A[], int l, int r) {
     QSort(A, i, r);
 }
 
+// 王道快排
 int Partition(int A[], int low, int high) {
     int pivot = A[low];
     while (low < high) {
