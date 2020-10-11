@@ -4,7 +4,6 @@
 #include <cassert>
 #include <cstring>
 #include "util.h"
-#include "linked_list.h"
 #include "stack.h"
 #include "queue.h"
 #include "search.h"

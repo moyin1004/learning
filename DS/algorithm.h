@@ -2,7 +2,7 @@
 #define __ALGORITHM__
 
 #include "type.h"
-#include "linked_list.h"
+#include "liner_list.h"
 #include "tree.h"
 
 int FindMid(ElemType a[], ElemType b[], int n);
