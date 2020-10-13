@@ -2,8 +2,8 @@
 #include <cctype>
 #include <algorithm>
 #include <cassert>
+#include <cstring>
 #include "util.h"
-#include "linked_list.h"
 #include "stack.h"
 #include "queue.h"
 #include "search.h"
@@ -11,6 +11,7 @@
 #include "tree.h"
 #include "sort.h"
 #include "graph.h"
+#include "ds_string.h"
 using namespace std;
 
 void test_linked_list() {
@@ -226,6 +227,18 @@ void test_ListSelectSort() {
     DestoryList(L);
 }
 
+extern int Next[MAXLEN];
+void test_KMP() {
+    char s[] = "ababaaababaa";
+    SString str;
+    str.length = 0;
+    StrAssign(str, s);
+    BuildNext(str);
+    Print(Next, str.length);
+    BuildNextval(str);
+    Print(Next, str.length);
+}
+
 int main() {
     // test_linked_list();
     // test_stack();
@@ -245,5 +258,6 @@ int main() {
     // test_Flag_Arrange();
     // test_IsMinHeap();
     test_ListSelectSort();
+    test_KMP();
     return 0;
 }

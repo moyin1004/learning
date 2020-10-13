@@ -1,7 +1,7 @@
 #ifndef __SORT__
 #define __SORT__
 #include "type.h"
-#include "linked_list.h"
+#include "liner_list.h"
 
 void InsertSort(int A[], int n);
 void ShellSort(int A[], int n);

@@ -34,19 +34,7 @@ void BubbleSort(int A[], int n) {
     }
 }
 
-void DBubbleSort(int A[], int n) {
-    for (int i = 0; i < n; ++i) {
-        bool flag = false;
-        for (int j = n-1; j > i; --j) {
-            if (A[j] < A[j-1]) {
-                swap(A[j], A[j-1]);
-                flag = true;
-            }
-        }
-        if (!flag) return ;
-    }
-}
-
+// 快排
 void QSort(int A[], int l, int r) {
     if (l >= r) return ;
     int bound = A[l];
@@ -60,6 +48,7 @@ void QSort(int A[], int l, int r) {
     QSort(A, i, r);
 }
 
+// 王道快排
 int Partition(int A[], int low, int high) {
     int pivot = A[low];
     while (low < high) {

@@ -17,7 +17,7 @@ $(EXE):$(OBJS)
 	$(CXX) -o $@ $^
 
 run:
-	./test.out
+	$(EXE)
 
 print:
 	@echo $(SRCS)
