@@ -22,6 +22,14 @@ int BinarySearch(int A[], int n, int x) {
     return A[mid] == x ? mid : -1;
 }
 
+int RecursionBinarySearch(int A[], int l, int r, int x) {
+    if (l == r) return -1;
+    int mid = l + (r-l)/2;
+    if (A[mid] == x) return mid;
+    else if (A[mid] < x) return RecursionBinarySearch(A, mid+1, r, x);
+    else return RecursionBinarySearch(A, l, mid, x);
+}
+
 void SearchInsert(int A[], int n, int x) {
     int l = 0;
     int r = n;

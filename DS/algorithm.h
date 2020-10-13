@@ -35,5 +35,11 @@ BiNode* LowestCommonAncestor(BiNode* root, BiNode* p, BiNode* q);
 // 查找
 
 // 排序
+// 奇数移动到偶数前面
+void Move(int A[], int n);
+// 荷兰国旗
+void Flag_Arrange(int A[], int n);
+// 判断最小堆
+bool IsMinHeap(int A[], int n);
 
 #endif

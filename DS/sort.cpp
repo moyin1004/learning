@@ -34,6 +34,19 @@ void BubbleSort(int A[], int n) {
     }
 }
 
+void DBubbleSort(int A[], int n) {
+    for (int i = 0; i < n; ++i) {
+        bool flag = false;
+        for (int j = n-1; j > i; --j) {
+            if (A[j] < A[j-1]) {
+                swap(A[j], A[j-1]);
+                flag = true;
+            }
+        }
+        if (!flag) return ;
+    }
+}
+
 void QSort(int A[], int l, int r) {
     if (l >= r) return ;
     int bound = A[l];
@@ -72,6 +85,20 @@ void SelectSort(int A[], int n) {
             if (A[j] < A[minx]) minx = j;
         }
         if (minx != i) swap(A[i], A[minx]);
+    }
+}
+
+void ListSelectSort(LinkList L) {
+    LNode *rear = L->next;
+    while (rear) {
+        LNode *min_p = rear;
+        LNode *q = rear->next;
+        while (q) {
+            min_p = min_p->data < q->data ? min_p : q;
+            q = q->next;
+        }
+        swap(min_p->data, rear->data);
+        rear = rear->next;
     }
 }
 
@@ -125,7 +152,7 @@ void HeapSort(ElemType A[], int N) { /* 堆排序 */
      int i;
      for (i = N/2-1; i >= 0; --i)/* 建立最大堆 */
          PercDown(A, i, N);
-      
+
      for (i = N-1; i > 0; --i) {
          /* 删除最大堆顶 */
          swap(A[0], A[i]);

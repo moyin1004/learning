@@ -12,3 +12,7 @@ void Copy(int a[], int b[], int n) {
         b[i] = a[i];
     }
 }
+
+void PrintFunction(const char *s) {
+    cout << "======" << s << "=======" << endl;
+}

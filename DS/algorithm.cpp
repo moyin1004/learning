@@ -388,3 +388,64 @@ BiNode* LowestCommonAncestor(BiNode* root, BiNode* p, BiNode* q) {
     }
     return NULL;
 }
+
+void Move(int A[], int n) {
+    int l = 0, r = n - 1;
+    while (l < r) {
+        while (l < r && A[r] % 2 == 0) --r;
+        while (l < r && A[l] % 2 == 1) ++l;
+        swap(A[l], A[r]);
+    }
+}
+
+int FindK(int A[], int n, int k) {
+    if (k > n) return -1;
+    while (1) {
+        int l = 0, r = n - 1;
+        int pivot = A[l];
+        while (l < r) {
+            while (l < r && pivot >= A[r]) --r;
+            A[l] = A[r];
+            while (l < r && A[l] <= pivot) ++l;
+            A[r] = A[l];
+        }
+        A[l] = pivot;
+        if (l + 1 == k) return pivot;
+        else if (l + 1 > k) {
+            r = l - 1;
+            l = 0;
+        }
+        else {
+            l = l + 1;
+            r = n-1;
+        }
+    }
+}
+
+// 1红 2白 3蓝
+void Flag_Arrange(int A[], int n) {
+    int i = 0, j = 1, k = n-1;
+    while (j <= k) {
+        switch(A[j]) {
+        case 1:
+            swap(A[i], A[j]);
+            ++i;
+            break;
+        case 3:
+            swap(A[k], A[j]);
+            --k;
+            break;
+        default:
+            ++j;
+        }
+    }
+}
+
+bool IsMinHeap(int A[], int n) {
+    for (int i = 0; i < n/2; ++i) {
+        int child = i*2+1;
+        if ((child < n && A[i] > A[child]) || ( child + 1 < n && A[i] > A[child+1]))
+            return false;
+    }
+    return true;
+}

@@ -6,6 +6,7 @@ using namespace std;
 void InitList(LinkList &L) {
     L = (LNode*)malloc(sizeof(LNode));
     L->next = NULL;
+    L->data = 0;
 }
 
 void DestoryList(LinkList &L) {

@@ -53,7 +53,7 @@ void test_stack() {
 }
 
 void test_queue() {
-    cout << "---------queue-----------" << endl;
+    PrintFunction(__FUNCTION__);
     Queue Q;
     InitQueue(Q);
     cout << "is empty: " << QueueEmpty(Q) << endl;
@@ -107,6 +107,7 @@ void test_find_mid() {
 }
 
 void test_avl_tree() {
+    PrintFunction(__FUNCTION__);
     AVLTree T = NULL;
     T = Insert(T, 5);
     T = Insert(T, 4);
@@ -123,7 +124,7 @@ void test_avl_tree() {
 }
 
 void test_CreatBTreeByOrder() {
-    cout << "======" << __FUNCTION__ << "=======" << endl;
+    PrintFunction(__FUNCTION__);
     int a[] = {4, 3, 10, 7, 8, 11, 5, 21, 10};
     int b[] = {7, 10, 8, 3, 4, 5, 21, 11, 10};
     BiTree T = CreatBTreeByOrder(a, b, 9);
@@ -141,7 +142,7 @@ void test_CreatBTreeByOrder() {
 }
 
 void test_Sort() {
-    cout << "======" << __FUNCTION__ << "=======" << endl;
+    PrintFunction(__FUNCTION__);
     int num = 11;
     int a[] = {7, 10, 8, 4, 3, 4, 5, 21, 11, 11, 20};
     int b[10];
@@ -177,7 +178,7 @@ void test_Sort() {
 }
 
 void test_Graph() {
-    cout << "======" << __FUNCTION__ << "=======" << endl;
+    PrintFunction(__FUNCTION__);
     Graph G = BuildGraph();
     BFS(G, 0);
     cout << endl;
@@ -186,6 +187,43 @@ void test_Graph() {
     Dijkstra(G, 0);
     cout << endl;
     DestoryGraph(G);
+}
+
+void test_Move() {
+    PrintFunction(__FUNCTION__);
+    int A[] = {4, 5, 6, 10, 9, 20, 21, 23, 25};
+    int len = sizeof(A) / sizeof(int);
+    Move(A, len);
+    Print(A, len);
+}
+
+
+void test_Flag_Arrange() {
+    PrintFunction(__FUNCTION__);
+    int A[] = {1, 2, 3, 2, 3, 1, 2, 3, 1, 2, 1, 2};
+    int len = sizeof(A) / sizeof(int);
+    Flag_Arrange(A, len);
+    Print(A, len);
+}
+
+void test_IsMinHeap() {
+    PrintFunction(__FUNCTION__);
+    int A[20];
+    int n = 0;
+    while (cin >> n) {
+        for (int i = 0; i < n; ++i) cin >> A[i];
+        cout << IsMinHeap(A, n) << endl;
+    }
+}
+
+void test_ListSelectSort() {
+    PrintFunction(__FUNCTION__);
+    LinkList L;
+    InitList(L);
+    List_TailInsert(L);
+    ListSelectSort(L);
+    PrintList(L);
+    DestoryList(L);
 }
 
 int main() {
@@ -202,6 +240,10 @@ int main() {
     // test_avl_tree();
     // test_CreatBTreeByOrder();
     // test_Sort();
-    test_Graph();
+    // test_Graph();
+    // test_Move();
+    // test_Flag_Arrange();
+    // test_IsMinHeap();
+    test_ListSelectSort();
     return 0;
 }

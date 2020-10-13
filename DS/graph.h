@@ -85,6 +85,8 @@ void DFSTraverse(Graph G);
 void BFS_MIN_Distance(Graph G, Vertex v);
 void Dijkstra(Graph G, Vertex start);
 
+bool TopologicalSort(Graph G);
+
 // 十字链表-有向图
 typedef struct CrossArcNode {
     int tailvex, headvex, info;

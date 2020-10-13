@@ -1,4 +1,5 @@
 #include "graph.h"
+#include "stack.h"
 #include "queue.h"
 #include "util.h"
 #include <cstring>
@@ -100,6 +101,19 @@ void DFS(Graph G, Vertex v) {
     }
 }
 
+void DFSNoRecursion(Graph G, Vertex v) {
+    AdjVNode *w;
+    Visit(v);
+    visit[v] = true;
+
+    for (w = G->adjlist[v].first; w; w = w->next) {
+        if (!visit[w->adjv]) {
+            visit[w->adjv] = true;
+            DFS(G, w->adjv);
+        }
+    }
+}
+
 void DFSTraverse(Graph G) {
     for (int i = 0; i < G->vexnum; ++i) {
         visit[i] = false;
@@ -153,4 +167,89 @@ void Dijkstra(Graph G, Vertex start) {
         }
     }
     Print(d, G->vexnum);
+}
+
+// void Floyd(Graph G) {
+//     for (int k = 0; k < G->vexnum; k++) {
+//         for (int u = 0; u < G->vexnum; u++) {
+//             for (int v = 0; v < G->vexnum; v++) {
+//                 A[u][v] = min(A[u][v], A[u][k]+A[k][v]);
+//             }
+//         }
+//     }
+// }
+
+void BuildIndegree(Graph G, int indegree[]) {
+    for (Vertex i = 0; i < G->vexnum; ++i) {
+        for (AdjVNode *w = G->adjlist[i].first; w; w = w->next) {
+            ++indegree[w->adjv];
+        }
+    }
+}
+
+bool TopologicalSort(Graph G) {
+    // 建立入度数组
+    int indegree[MaxVertexNum];
+    BuildIndegree(G, indegree);
+    Stack S;
+    InitStack(S);
+    for (Vertex i = 0; i < G->vexnum; ++i) {
+        if (indegree[i] == 0) Push(S, i);
+    }
+    int count = 0;
+    while (!StackEmpty(S)) {
+        Vertex v;
+        Pop(S, v);
+        Visit(v);
+        ++count;
+        for (AdjVNode *w = G->adjlist[v].first; w; w = w->next) {
+            if (!(--indegree[w->adjv])) Push(S, w->adjv);
+        }
+    }
+    if (count = G->vexnum) return false;
+    return true;
+}
+
+bool ReTS_Visit[MaxVertexNum]; // 已被访问的为当前结点的子孙
+bool ReTS_Found[MaxVertexNum]; // 已被发现的为当前结点的祖先
+bool DFSReTopologicalSort(Graph G, Vertex v) {
+    // 建立入度数组
+    AdjVNode *w;
+    ReTS_Found[v] = true;
+
+    for (w = G->adjlist[v].first; w; w = w->next) {
+        if (!ReTS_Found[w->adjv]) {
+            ReTS_Found[w->adjv] = true;
+            bool ret = DFSReTopologicalSort(G, w->adjv);
+            if (!ret) return ret;
+        }
+        else if (!ReTS_Visit[w->adjv]) { // 访问到当前结点的祖先，有环路
+            return false;
+        }
+    }
+    Visit(v);
+    ReTS_Visit[v] = true;
+    return true;
+}
+
+bool TS_Visit[MaxVertexNum]; // 已被访问的为当前结点的子孙
+bool TS_Found[MaxVertexNum]; // 已被发现的为当前结点的祖先
+bool DFSTopologicalSort(Graph G, Vertex v) {
+    // 建立入度数组
+    AdjVNode *w;
+    TS_Found[v] = true;
+
+    for (w = G->adjlist[v].first; w; w = w->next) {
+        if (!TS_Found[w->adjv]) {
+            TS_Found[w->adjv] = true;
+            bool ret = DFSReTopologicalSort(G, w->adjv);
+            if (!ret) return ret;
+        }
+        else if (!TS_Visit[w->adjv]) { // 访问到当前结点的祖先，有环路
+            return false;
+        }
+    }
+    Visit(v);
+    TS_Visit[v] = true;
+    return true;
 }
