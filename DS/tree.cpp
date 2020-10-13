@@ -73,19 +73,18 @@ void PostOrder(BiTree BT) {
     if (!BT) return ;
     stack<BiNode *> S;
     BiNode *p = BT;
-    BiNode *r = NULL;
+    BiNode *r = NULL; // 标识当前访问的最后结点
     while (p || !S.empty()) {
         while (p) {
             S.push(p);
             p = p->left;
-            // continue;
         }
         p = S.top();
         if (p->right && p->right != r) {
             p = p->right;
         }
         else {
-            cout << p->data << " ";
+            Visit(p);
             r = p;
             S.pop();
             p = NULL;
@@ -124,11 +123,11 @@ void DestoryTree(BiTree &T) {
     T = NULL;
 }
 
-
-// ThreadTree
-void InThread(ThreadTree &T, ThreadNode *&pre) {
-    if (!T) return;
-    InThread(T->lchild, pre);
+/**
+ * 线索二叉树 ThreadTree
+ */
+// 前中后序构造线索二叉树，遍历的通用访问结点函数
+void ThreadVisit(ThreadNode *T, ThreadNode *&pre) {
     if (!T->lchild) {
         T->ltag = 1;
         T->lchild = pre;
@@ -138,20 +137,18 @@ void InThread(ThreadTree &T, ThreadNode *&pre) {
         pre->rchild = T;
     }
     pre = T;
+}
+
+void InThread(ThreadTree &T, ThreadNode *&pre) {
+    if (!T) return;
+    InThread(T->lchild, pre);
+    ThreadVisit(T, pre);
     InThread(T->rchild, pre);
 }
 
 void PreThread(ThreadTree &T, ThreadNode *&pre) {
     if (!T) return;
-    if (!T->lchild) {
-        T->ltag = 1;
-        T->lchild = pre;
-    }
-    if (pre && !pre->rchild) {
-        pre->rtag = 1;
-        pre->rchild = T;
-    }
-    pre = T;
+    ThreadVisit(T, pre);
     if (T->ltag == 0) PreThread(T->lchild, pre); // 防止转圈
     PreThread(T->rchild, pre);
 }
@@ -160,15 +157,7 @@ void PostThread(ThreadTree &T, ThreadNode *&pre) {
     if (!T) return;
     PostThread(T->lchild, pre);
     PostThread(T->rchild, pre);
-    if (!T->lchild) {
-        T->ltag = 1;
-        T->lchild = pre;
-    }
-    if (pre && !pre->rchild) {
-        pre->rtag = 1;
-        pre->rchild = T;
-    }
-    pre = T;
+    ThreadVisit(T, pre);
 }
 
 void CreatThread(ThreadTree T, int flag) {
@@ -194,13 +183,12 @@ ThreadNode *LastNode(ThreadNode *p) {
     while (p && p->rtag == 0) p = p->rchild;
     return p;
 }
-
 ThreadNode *PreNode(ThreadNode *p, int flag) {
     if (!p) return p;
     if (p->ltag == 1) p = p->lchild;
-    else {
+    else { // 左孩子存在
         switch (flag) {
-        case 1:
+        case 1: // 先序线索树
             // 前驱是父节点，二叉链表找不到
             /*
             if (p->parent->rchild == p && p->parent->lchild) {
@@ -215,11 +203,12 @@ ThreadNode *PreNode(ThreadNode *p, int flag) {
             else p = p->parent;
             */
             break;
-        case 2:
+        case 2: // 中序线索树
+            // 前驱是左孩子的最右结点
             p = p->lchild;
             p = LastNode(p);
             break;
-        default:
+        default: // 后序线索树
             if (p->rchild) p = p->rchild;
             else p = p->lchild;
             break;
@@ -233,17 +222,17 @@ ThreadNode *FirstNode(ThreadNode *p) {
     while (p && p->ltag == 0) p = p->lchild;
     return p;
 }
-
 ThreadNode *NextNode(ThreadNode *p, int flag) {
     if (!p) return p;
     if (p->rtag == 1) p = p->rchild;
-    else {
+    else { // 右孩子存在
         switch (flag) {
-        case 1:
+        case 1: // 先序线索树
             if (p->lchild) p = p->lchild;
             else p = p->rchild;
             break;
-        case 2:
+        case 2: // 中序线索树
+            // 前驱是右孩子的最左结点
             p = p->rchild;
             p = FirstNode(p);
             break;
@@ -267,18 +256,19 @@ ThreadNode *NextNode(ThreadNode *p, int flag) {
     return p;
 }
 
+// 中序线索树的中序遍历与逆中序遍历
 void InOrder(ThreadNode *T) {
     for (ThreadNode *p = FirstNode(T); p != NULL; p = NextNode(p, 2))
         cout << p->data << endl;
 }
-
 void RevInOrder(ThreadNode *T) {
     for (ThreadNode *p = LastNode(T); p != NULL; p = PreNode(p, 2))
         cout << p->data << endl;
 }
 
-
-// BST
+/**
+ * BST
+ */
 BSTNode *BST_Search(BSTree T, int key) {
     // 空间复杂度O(1)
     while (T && key != T->key) {

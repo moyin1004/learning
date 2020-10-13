@@ -123,17 +123,18 @@ void DFSTraverse(Graph G) {
     }
 }
 
+// BFS最短路径（无向图）
 void BFS_MIN_Distance(Graph G, Vertex v) {
     AdjVNode *w;
-    int distance[MaxVertexNum] = {0};
-    int path[MaxVertexNum] = {0};
+    int distance[MaxVertexNum] = {0};    // 记录v到每个顶点的最短距离
+    int path[MaxVertexNum] = {0};        // 记录最短路径中每个顶点的前驱顶点
 
     Queue Q;
     InitQueue(Q);
     EnQueue(Q, v);
     while (!QueueEmpty(Q)) {
         DeQueue(Q, v);
-        for (w = G->adjlist[v].first; w; w = w->next) {
+        for (w = G->adjlist[v].first; w; w = w->next) { // 遍历v的所有相邻顶点
             if (!distance[v]) {
                 distance[w->adjv] = distance[v] + 1;
                 path[w->adjv] = v;
@@ -146,27 +147,27 @@ void BFS_MIN_Distance(Graph G, Vertex v) {
 typedef int Distance;
 typedef pair<Distance, Vertex> pii;
 void Dijkstra(Graph G, Vertex start) {
-    int d[MaxVertexNum];
-    std::memset(d, 127, sizeof(d));
+    int distance[MaxVertexNum];
+    std::memset(distance, 127, sizeof(distance));
     bool visited[MaxVertexNum] = {0};
 
     priority_queue<pii, vector<pii>, greater<pii>> Q;
-    d[start] = 0;
+    distance[start] = 0;
     Q.push(make_pair(0, start));
     while (!Q.empty()) {
-        Vertex u = Q.top().second;  // 选取当前最短路径所在的结点
+        Vertex u = Q.top().second;  // 选取当前最短路径所在的顶点
         Q.pop();
-        if (!visited[u]) {          // 每个结点只作一次松弛
+        if (!visited[u]) {          // 每个顶点只作一次松弛，对u顶点相邻的顶点计算最短距离
             visited[u] = true;
-            // 遍历当前结点连接的所有结点
+            // 遍历当前顶点连接的所有顶点
             for (AdjVNode *v = G->adjlist[u].first; v; v = v->next) {
-                if (d[v->adjv] <= d[u] + v->weight) continue;
-                d[v->adjv] = d[u] + v->weight;  // 更新最短路径
-                Q.push(make_pair(d[v->adjv], v->adjv));
+                if (distance[v->adjv] <= distance[u] + v->weight) continue;
+                distance[v->adjv] = distance[u] + v->weight;  // 更新最短路径
+                Q.push(make_pair(distance[v->adjv], v->adjv));
             }
         }
     }
-    Print(d, G->vexnum);
+    Print(distance, G->vexnum);
 }
 
 // void Floyd(Graph G) {
