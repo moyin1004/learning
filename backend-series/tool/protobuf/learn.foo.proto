@@ -1,0 +1,23 @@
+syntax = "proto3";  // protobuf 3.8
+package learn.foo;
+
+enum Type {
+    APP = 0;
+    WEB = 1;
+    PC = 2;
+}
+
+message Data {
+    int32 id = 1;
+    uint32 version = 2;
+    oneof url {
+        string http = 3;
+        string https = 4;
+    }
+    reserved 5, 6;
+    Type type = 7;
+}
+
+message Tint32 {
+    int32 n = 1;
+}
