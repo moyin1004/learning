@@ -3,6 +3,11 @@ Learning C++ now.
 
 ---
 
+# 后端开发系列 [backend-series](./backend-series)
+- redis/mysql
+- protobuf
+- algorithm
+
 # C++
 
 * encapsulate [log4cpp](http://log4cpp.sourceforge.net/) : [20190111](https://github.com/moyin1004/learning/tree/master/TimeLine/20190111)
@@ -15,6 +20,7 @@ Learning C++ now.
 * inheritance pratice : [20190128](https://github.com/moyin1004/learning/tree/master/TimeLine/20190128)
 * linux pthread : [20190203](https://github.com/moyin1004/learning/tree/master/TimeLine/20190203)
 
-# [Python](https://github.com/moyin1004/python-learn)
+# [DataStructure](./DS)
+- 常见数据结构实现（以408为主）
 
 ---
