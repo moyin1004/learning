@@ -5,4 +5,5 @@
 *.docx
 *.doc
 *.md
+*.vscode
 !README.md

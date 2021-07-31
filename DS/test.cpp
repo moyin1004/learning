@@ -190,6 +190,15 @@ void test_Graph() {
     DestoryGraph(G);
 }
 
+void test_TopologicalSort() {
+    PrintFunction(__FUNCTION__);
+    Graph G = BuildGraph();
+    DFSReTopological(G);
+    DestoryGraph(G);
+    cout << endl;
+    //3 5 4 2 0 1
+}
+
 void test_Move() {
     PrintFunction(__FUNCTION__);
     int A[] = {4, 5, 6, 10, 9, 20, 21, 23, 25};
@@ -197,7 +206,6 @@ void test_Move() {
     Move(A, len);
     Print(A, len);
 }
-
 
 void test_Flag_Arrange() {
     PrintFunction(__FUNCTION__);
@@ -257,7 +265,8 @@ int main() {
     // test_Move();
     // test_Flag_Arrange();
     // test_IsMinHeap();
-    test_ListSelectSort();
-    test_KMP();
+    // test_ListSelectSort();
+    // test_KMP();
+    test_TopologicalSort();
     return 0;
 }

@@ -12,6 +12,11 @@ int Search_Seq(SeqList S, ElemType x);
 int BinarySearch(int A[], int n, int x);
 int RecursionBinarySearch(int A[], int l, int r, int x);
 
+typedef struct {
+    ElemType *elem;
+    int TableLen;
+} SSTable;
+
 // 分块
 typedef struct {
     ElemType maxValue;
