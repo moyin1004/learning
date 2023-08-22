@@ -1,33 +1,32 @@
+#include <algorithm>
 #include <iostream>
 #include <list>
-#include <algorithm>
 using namespace std;
 
 class IDDisplay {
 public:
     virtual void Show(float temperature) = 0;
-    virtual ~IDDisplay();
+    virtual ~IDDisplay(){};
 };
 
 // 放到其他文件
 class DisplayA : public IDDisplay {
 public:
-    void Show(float temperature);
+    void Show(float temperature) { cout << temperature << "℃" << endl; }
 };
-class DisplayB : public IDDisplay{
+class DisplayB : public IDDisplay {
 public:
-    void Show(float temperature);
+    void Show(float temperature) { cout << temperature << "℉" << endl; }
 };
 
 class WeatherData {
-
+public:
+    float temper = 10;
 };
 
 class DataCenter {
 public:
-    void Attach(IDDisplay *ob) {
-        _obs.push_back(ob);
-    }
+    void Attach(IDDisplay *ob) { _obs.push_back(ob); }
     void Detach(IDDisplay *ob) {
         auto it = find(_obs.begin(), _obs.end(), ob);
         if (it != _obs.end()) {
@@ -42,15 +41,14 @@ public:
     }
 
 protected:
-    virtual float CalcTemperature() {
-        WeatherData *data = GetWeatherData();
-        float temper = 10;
-        return temper;
+    float CalcTemperature() {
+        // WeatherData *data = GetWeatherData();
+        return 10;
     }
 
 private:
-    WeatherData *GetWeatherData();
-    list<IDDisplay*> _obs;
+    WeatherData *GetWeatherData() { return nullptr; }
+    list<IDDisplay *> _obs;
 };
 
 int main() {

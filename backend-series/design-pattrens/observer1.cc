@@ -3,20 +3,18 @@ using namespace std;
 
 class DisplayA {
 public:
-    void Show(float temperature);
+    void Show(float temperature) {}
 };
 class DisplayB {
 public:
-    void Show(float temperature);
+    void Show(float temperature) {}
 };
 class DisplayC {
 public:
-    void Show(float temperature);
+    void Show(float temperature) {}
 };
 
-class WeatherData {
-
-};
+class WeatherData {};
 
 class DataCenter {
 public:
@@ -25,8 +23,9 @@ public:
         float temper;
         return temper;
     }
+
 private:
-    WeatherData *GetWeatherData();
+    WeatherData *GetWeatherData() {}
 };
 
 int main() {

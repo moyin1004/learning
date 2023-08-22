@@ -10,20 +10,13 @@ public:
         Show2();
         Show3();
     }
+
 protected:
     // 接口隔离
-    virtual void Show0() {
-        cout << "show0" << endl;
-    }
-    virtual void Show1() {
-        cout << "show1" << endl;
-    }
-    virtual void Show2() {
-        cout << "show2" << endl;
-    }
-    virtual void Show3() {
-        cout << "show3" << endl;
-    }
+    virtual void Show0() { cout << "show0" << endl; }
+    virtual void Show1() { cout << "show1" << endl; }
+    virtual void Show2() { cout << "show2" << endl; }
+    virtual void Show3() { cout << "show3" << endl; }
 };
 
 /*
@@ -34,22 +27,14 @@ protected:
 class ZooShowEx : public ZooShow {
 public:
     // 依赖倒置
-    virtual void Show1() override {
-        cout << "Ex::show1" << endl;
-    }
-    virtual void Show3() override {
-        cout << "Ex::show3" << endl;
-    }
+    virtual void Show1() override { cout << "Ex::show1" << endl; }
+    virtual void Show3() override { cout << "Ex::show3" << endl; }
 };
 class ZooShowEx1 : public ZooShow {
 public:
     // 依赖倒置
-    virtual void Show0() override {
-        cout << "Ex1::show0" << endl;
-    }
-    virtual void Show2() override {
-        cout << "Ex1::show2" << endl;
-    }
+    virtual void Show0() override { cout << "Ex1::show0" << endl; }
+    virtual void Show2() override { cout << "Ex1::show2" << endl; }
 };
 
 int main() {

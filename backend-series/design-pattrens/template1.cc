@@ -3,22 +3,14 @@ using namespace std;
 
 class ZooShow {
 public:
-    void Show0() {
-        cout << "show0" << endl;
-    }
-    void Show2() {
-        cout << "show2" << endl;
-    }
+    void Show0() { cout << "show0" << endl; }
+    void Show2() { cout << "show2" << endl; }
 };
 
 class ZooShowEx {
 public:
-    void Show1() {
-        cout << "show1" << endl;
-    }
-    void Show3() {
-        cout << "show3" << endl;
-    }
+    void Show1() { cout << "show1" << endl; }
+    void Show3() { cout << "show3" << endl; }
 };
 
 int main() {
