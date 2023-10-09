@@ -5,11 +5,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
+#include <sys/time.h>
 #include <errno.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 
 #define MAX_BUFFER      128
