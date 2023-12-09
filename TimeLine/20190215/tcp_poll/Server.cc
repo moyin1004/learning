@@ -3,40 +3,41 @@
 /// @data    2019-02-14 19:42:10
 
 #include "Server.h"
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <sys/select.h>
-#include <sys/time.h>
-#include <netinet/in.h>
+
 #include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <poll.h>
+#include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
+
 #include <iostream>
 #include <unordered_set>
- 
+
+using std::cerr;
 using std::cout;
 using std::endl;
-using std::cerr;
 using std::string;
 using std::unordered_set;
 
-#define ERROR_EXIT(msg) do{\
-    cerr << msg << endl;\
-    exit(EXIT_FAILURE);\
-} while(0)
+#define ERROR_EXIT(msg)      \
+    do {                     \
+        cerr << msg << endl; \
+        exit(EXIT_FAILURE);  \
+    } while (0)
 
 namespace wd {
 
-Server::Server()
-: _listenfd(-1)
-{
+Server::Server() : _listenfd(-1) {
     _listenfd = socket(AF_INET, SOCK_STREAM, 0);
     if (_listenfd == -1) ERROR_EXIT("socket");
 }
 
 void Server::setReuseAddr(int on) {
     int reuse = on;
-    //将网络地址设置成可以重用的
+    // 将网络地址设置成可以重用的
     if (setsockopt(_listenfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int))) {
         ERROR_EXIT("setsockopt");
     }
@@ -44,7 +45,7 @@ void Server::setReuseAddr(int on) {
 
 void Server::setReusePort(int on) {
     int reuse = on;
-    //端口设置成可以重用的
+    // 端口设置成可以重用的
     if (setsockopt(_listenfd, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(int))) {
         ERROR_EXIT("setsockopt");
     }
@@ -54,54 +55,48 @@ void Server::startServer(const string &ip, unsigned short port) {
     cout << ">> server listened = " << _listenfd << endl;
     setReuseAddr(1);
     setReusePort(1);
-    
+
     bindInetAddr(_listenfd, ip, port);
     myListen(_listenfd);
 }
 
 void Server::pollServe() {
-    fd_set rfds;
-    struct timeval tv;  //设置等待时间，这个时间后返回一次
-    int maxfd = 1024;
+    int pfds_len = 1;
+    struct pollfd *pfds = (struct pollfd *)malloc(sizeof(struct pollfd) * pfds_len);
+    pfds[0].fd = _listenfd;
+    pfds[0].events = POLLIN;
 
-    while(true) {
-        FD_ZERO(&rfds);
-        FD_SET(_listenfd, &rfds);
-
-        selectFdsInit(maxfd, &rfds);
-        tv.tv_sec = 5;
-        tv.tv_usec = 0;
-
-        //int ready = select(maxfd, &rfds, nullptr, nullptr, nullptr);
-        int ready = select(maxfd + 1, &rfds, nullptr, nullptr, &tv);
-        cout << ">> select retval = " << ready << endl;
+    while (true) {
+        int ready = poll(pfds, sizeof(pfds), 100);
+        cout << ">> poll retval = " << ready << endl;
         if (ready == -1 && errno == EINTR) {
             continue;
-        }
-        else if (ready == -1) ERROR_EXIT("select");
+        } else if (ready == -1)
+            ERROR_EXIT("poll");
         else if (ready == 0) {
-            cout << ">> select timeout!" << endl;
+            cout << ">> poll timeout!" << endl;
             continue;
-        }
-        else {
-            for (int fd = 0; fd < maxfd + 1; ++fd) {
-                if (FD_ISSET(fd, &rfds) && fd == _listenfd) {
+        } else {
+            int cur = pfds_len;
+            for (int i = 0; i < cur; ++i) {
+                if (pfds[i].fd == _listenfd && pfds[i].events & POLLIN) {
                     int peerfd = handleNewConnection(_listenfd);
                     setNonBlock(peerfd);
                     printConnectionInfo(peerfd);
                     cout << "has connected!" << endl;
-                    FD_SET(peerfd, &rfds);
+                    ++pfds_len;
+                    pfds = (struct pollfd *)realloc(pfds, sizeof(struct pollfd) * pfds_len);
                     _client_fds.insert(peerfd);
                 }
-                if (FD_ISSET(fd, &rfds) && fd != _listenfd) {
-                    cout << "fd = " << fd << endl;
-                    handleClientMsg(fd, &rfds);
+                if (pfds[i].fd != _listenfd) {
+                    cout << "fd = " << pfds[i].fd << endl;
+                    handleClientMsg(pfds[i].fd, pfds);
                 }
             }
         }
         cout << endl;
-    } //end of while
-    FD_CLR(_listenfd, &rfds);
+    }  // end of while
+    free(pfds);
     close(_listenfd);
 }
 
@@ -119,7 +114,8 @@ void Server::printConnectionInfo(int peerfd) {
 
     struct sockaddr_in clientaddr;
     ret = getpeername(peerfd, (psockaddr)&clientaddr, &len);
-    if (ret == -1) cerr << "getpeername" << endl;
+    if (ret == -1)
+        cerr << "getpeername" << endl;
     else {
         string serverip(inet_ntoa(serveraddr.sin_addr));
         unsigned short serverport = ntohs(serveraddr.sin_port);
@@ -128,7 +124,7 @@ void Server::printConnectionInfo(int peerfd) {
         unsigned short clientport = ntohs(clientaddr.sin_port);
 
         cout << ">> server " << serverip << ":" << serverport << " --> "
-             << "client " << clientip << ":" << clientport << endl; 
+             << "client " << clientip << ":" << clientport << endl;
     }
 }
 
@@ -138,7 +134,7 @@ int Server::bindInetAddr(int fd, const string &ip, unsigned short port) {
     serveraddr.sin_port = htons(port);
     inet_aton(ip.data(), &serveraddr.sin_addr);
 
-    int ret = bind(fd ,(psockaddr)&serveraddr, sizeof(serveraddr));
+    int ret = bind(fd, (psockaddr)&serveraddr, sizeof(serveraddr));
     if (ret == -1) {
         close(fd);
         ERROR_EXIT("bind");
@@ -171,40 +167,38 @@ int Server::handleNewConnection(int listenfd) {
     return peerfd;
 }
 
-void Server::handleClientMsg(int peerfd, fd_set *rfds) {
+void Server::handleClientMsg(int peerfd, pollfd *rfds) {
     char buff[1024] = {0};
     cout << ">> before recv " << endl;
-    int ret = recv(peerfd, buff, sizeof(buff), 0); //默认为阻塞式函数
+    int ret = recv(peerfd, buff, sizeof(buff), 0);  // 默认为阻塞式函数
     cout << "server recv ret = " << ret << endl;
     if (ret < 0) {
-        if (ret == -1 && errno == EINTR) //errno == EINTR 中断
-            return; 
+        if (ret == -1 && errno == EINTR)  // errno == EINTR 中断
+            return;
         else
             cerr << ">> no recv" << endl;
-            //ERROR_EXIT("revc"); //设置为非阻塞式，这里会退出
-    }
-    else if (ret == 0) {
+        // ERROR_EXIT("revc"); //设置为非阻塞式，这里会退出
+    } else if (ret == 0) {
         printConnectionInfo(peerfd);
         cout << " has closed!!!" << endl;
         close(peerfd);
-        FD_CLR(peerfd, rfds);
+        // FD_CLR(peerfd, rfds);
         _client_fds.erase(peerfd);
-    }
-    else {
+    } else {
         cout << ">> server got msg from client: " << buff << endl;
         ret = send(peerfd, buff, strlen(buff), 0);
         if (ret == -1) {
-            cerr << "send" << endl;;
+            cerr << "send" << endl;
             close(peerfd);
         }
     }
 }
 
-void Server::selectFdsInit(int &maxfd, fd_set * rfds) {
-    for (auto & fd : _client_fds) {
+void Server::selectFdsInit(int &maxfd, fd_set *rfds) {
+    for (auto &fd : _client_fds) {
         FD_SET(fd, rfds);
         if (maxfd < fd) maxfd = fd;
     }
 }
 
-} //end of namespce wd
+}  // namespace wd
