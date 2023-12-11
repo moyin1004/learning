@@ -55,7 +55,6 @@ int main() {
                     if (clientfd < 0) {
                         return clientfd;
                     }
-                    // setsockopt(clientfd, SOL_SOCKET, SOCK_NONBLOCK, &opt, sizeof(int));
                     struct sockaddr_storage addr;
                     printf("add:%d, ip:%s\n", clientfd,
                            inet_ntop(AF_INET, &client_addr, (char *)&addr,
@@ -94,21 +93,32 @@ int main() {
                     epoll_ctl(epfd, EPOLL_CTL_MOD, events[i].data.fd, &events[i]);
                 } else if (events[i].events & EPOLLOUT) {
                 send:
-                    int slen = send(events[i].data.fd, sbuffer + nsucc, sbuffer_len - nsucc, 0);
+                    int target = 1024;
+                    if (nsucc + target > sbuffer_len) {
+                        target = sbuffer_len - nsucc;
+                    }
+                    // 当slen == 需要发送的字节数 ET模式下不会继续触发OUT事件
+                    // 当slen < 需要发送的字节数 ET模式下会继续触发OUT事件
+                    // 此时可以不用连续循环发送到缓冲区满为止
+                    int slen = send(events[i].data.fd, sbuffer + nsucc, target, 0);
                     if (slen >= 0) {
                         nsucc += slen;
                         printf("send, fd:%d, len:%d, nsucc:%d\n", events->data.fd, slen, nsucc);
                         if (nsucc < sbuffer_len) {
                             goto send;
                         } else {  // 发送完成
-                            events[i].events = EPOLLIN | EPOLLET;
-                            epoll_ctl(epfd, EPOLL_CTL_MOD, events[i].data.fd, &events[i]);
+                            // LT模式下只要缓冲区可写会一直触发EPOLLOUT，不需要写的时候需要取消EPOLLOUT事件
+                            // ET模式的优点是设置EPOLLIN|EPOLLOUT之后，不用频繁调用EPOLL_CTL_MOD修改事件
+                            // ET模式比LT模式少了取消EPOLLOUT事件的操作
+                            // events[i].events = EPOLLIN | EPOLLET;
+                            // epoll_ctl(epfd, EPOLL_CTL_MOD, events[i].data.fd, &events[i]);
                         }
                     } else if (slen < 0 && errno == EAGAIN) {
                         // 所有文件描述符判断是否写完缓冲区
                         printf("socket noblock, send errno:%d\n", errno);
                     } else {
                         printf("send error:%d\n", errno);
+                        break;
                     }
                 }
             }
