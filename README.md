@@ -2,11 +2,22 @@
 Learning C++ now.
 
 ---
+TODO
+- [ ] udp/kcp 处理多个连接
+
+---
 
 # 后端开发系列 [backend-series](./backend-series)
-- redis/mysql
-- protobuf
 - algorithm
+- linux
+    - [memory pool](./backend-series/linux/mempool/)
+    - [thread pool](./backend-series/linux/threadpool/)
+- net
+    - [epoll](./backend-series/net/epoll/)
+    - [websocket](./backend-series/net/websocket.c)
+- tool
+    - redis/mysql
+    - protobuf
 
 # C++
 

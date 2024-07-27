@@ -115,10 +115,11 @@ char *decode_packet(char *stream, char *mask, int length, int *ret);
 int encode_packet(char *buffer, char *mask, char *stream, int length);
 
 struct _nty_ophdr {
+    // 2Bytes
+    // 位域表示
     unsigned char opcode : 4, rsv3 : 1, rsv2 : 1, rsv1 : 1, fin : 1;
     unsigned char payload_length : 7, mask : 1;
-
-} __attribute__((packed));
+} __attribute__((packed));  // 按照实际占用字节数进行对齐
 
 struct _nty_websocket_head_126 {
     unsigned short payload_length;
@@ -218,6 +219,7 @@ int handle_ws_handshake(struct sockitem *data) {
     }
     char wskey[] = "Sec-WebSocket-Key";
     char *pos = strstr(data->recvbuffer, "\r\n") + 2;
+    // 解析http请求
     while (pos + 2 < data->recvbuffer + data->nrecvsucc) {
         char key[512] = {0};
         int keylen = 0;

@@ -7,3 +7,5 @@
 *.md
 *.vscode
 !README.md
+client
+server
