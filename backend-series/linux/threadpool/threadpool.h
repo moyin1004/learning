@@ -17,7 +17,6 @@
         if (item->next != NULL) item->next->prev = item->prev; \
         if (list == item) list = item->next;                   \
         item->prev = item->next = NULL;                        \
-        F                                                      \
     } while (0)
 
 struct NJOB {
@@ -48,6 +47,23 @@ typedef struct NMANAGER {
 
 void *thread_callback(void *arg) {
     struct NWORKER *worker = (struct NWORKER *)arg;
+    while (1) {
+        pthread_mutex_lock(&worker->pool->mtx);
+        while (worker->pool->jobs == NULL) {
+            if (worker->terminate) break;
+            pthread_cond_wait(&worker->pool->cond, &worker->pool->mtx);
+        }
+        if (worker->terminate) {
+            pthread_mutex_unlock(&worker->pool->mtx);
+            break; // pthread_cancel()
+        }
+        struct NJOB *job = worker->pool->jobs;
+        if (job != NULL) {
+            LL_REMOVE(job, worker->pool->jobs);
+        }
+        pthread_mutex_unlock(&worker->pool->mtx);
+        job->func(job); // 执行任务
+    }
     return worker;
 }
 
@@ -78,8 +94,29 @@ int nThreadPoolCreate(nThreadPool *pool, int numWorkers) {
         }
         LL_ADD(worker, pool->workers);
     }
+    return 0;
 }
 
-int nThreadPoolDestory(nThreadPool *pool) {}
+int nThreadPoolDestory(nThreadPool *pool) {
+    for (struct NWORKER *worker = pool->workers; worker != NULL; ) {
+        worker->terminate = 1;
+        worker = worker->next;
+    }
+    pthread_cond_broadcast(&pool->cond);
+    for (struct NWORKER *worker = pool->workers; worker != NULL; ) {
+        // LL_REMOVE(worker, pool->workers);
+        pthread_join(worker->threadid, NULL);
+        struct NWORKER *tmp = worker;
+        worker = worker->next;
+        free(tmp);
+    }
+    return 0;
+}
 
-int nThreadPoolPushTask(nThreadPool *pool, struct NJOB *task) {}
+int nThreadPoolPushTask(nThreadPool *pool, struct NJOB *job) {
+    pthread_mutex_lock(&pool->mtx);
+    LL_ADD(job, pool->jobs);
+    pthread_cond_signal(&pool->cond);
+    pthread_mutex_unlock(&pool->mtx);
+    return 0;
+}
