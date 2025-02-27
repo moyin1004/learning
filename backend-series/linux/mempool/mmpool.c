@@ -2,10 +2,17 @@
 /// @author  moyin(moyin1004@163.com)
 /// @data    2021-04-28 12:48:12
 
+#define _POSIX_C_SOURCE 200112L 
+
 #include "mmpool.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#define MP_ALIGNMENT 32
+#define MP_PAGE_SIZE 4096
+#define MP_MAX_ALLOC_FROM_POOL (MP_PAGE_SIZE - 1)
 
 /**
  * @brief 分配小块内存
@@ -23,8 +30,7 @@ static void *mp_alloc_block(struct mp_pool_s *pool, size_t size) {
     if (ret) return NULL;
 
     struct mp_node_s *p, *new_node, *current;
-    new_node = (struct mp_node_s*)m;
-
+    new_node = (struct mp_node_s *)m;
     new_node->end = m + psize;
     new_node->next = NULL;
     new_node->failed = 0;
@@ -83,6 +89,7 @@ static void *mp_alloc_large(struct mp_pool_s *pool, size_t size) {
 
 struct mp_pool_s *mp_create_pool(size_t size) {
     struct mp_pool_s *pool;
+    // 指定内存对齐分配内存
     int ret = posix_memalign((void **)&pool, MP_ALIGNMENT,
                              size + sizeof(struct mp_pool_s) + sizeof(struct mp_node_s));
     if (ret) {
@@ -102,7 +109,7 @@ struct mp_pool_s *mp_create_pool(size_t size) {
 }
 
 void mp_destory_pool(struct mp_pool_s *pool) {
-    if (!pool) return ;
+    if (!pool) return;
 
     // 释放大块
     struct mp_large_s *large = NULL;
@@ -122,7 +129,7 @@ void mp_destory_pool(struct mp_pool_s *pool) {
 }
 
 void mp_reset_pool(struct mp_pool_s *pool) {
-    if (!pool) return ;
+    if (!pool) return;
     // 释放大块
     struct mp_large_s *large = NULL;
     for (large = pool->large; large; large = large->next) {
@@ -139,7 +146,7 @@ void mp_reset_pool(struct mp_pool_s *pool) {
 
 void *mp_alloc(struct mp_pool_s *pool, size_t size) {
     if (!pool || size < 0) return NULL;
-    if (size > MP_PAGE_SIZE) {
+    if (size > pool->max) {
         return mp_alloc_large(pool, size);
     } else {
         struct mp_node_s *p = pool->current;
@@ -147,10 +154,10 @@ void *mp_alloc(struct mp_pool_s *pool, size_t size) {
         if (p->end - m >= size) {  // 剩余内存够用
             p->last = m + size;
             return m;
-        } else {                   // 不够
+        } else {  // 不够
             return mp_alloc_block(pool, size);
         }
-    } 
+    }
 }
 
 void *mp_calloc(struct mp_pool_s *pool, size_t size) {
@@ -162,13 +169,13 @@ void *mp_calloc(struct mp_pool_s *pool, size_t size) {
 }
 
 void mp_free(struct mp_pool_s *pool, void *p) {
-    if (!pool) return ;
+    if (!pool) return;
     struct mp_large_s *large = NULL;
     for (large = pool->large; large; large = large->next) {
         if (p == large->alloc) {
             free(large->alloc);
             large->alloc = NULL;
-            return ;
+            return;
         }
     }
 }

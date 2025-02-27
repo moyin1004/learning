@@ -7,12 +7,8 @@
 
 #include <unistd.h>
 
-#define MP_ALIGNMENT           32
-#define MP_PAGE_SIZE           4096
-#define MP_MAX_ALLOC_FROM_POOL (MP_PAGE_SIZE-1)
-
-#define mp_align(n, alignment) (((n)+(alignment-1)) & ~(alignment-1))
-#define mp_align_ptr(p, alignment) (void *)((((size_t)p)+(alignment-1)) & ~(alignment-1))
+#define mp_align(n, alignment) (((n) + (alignment - 1)) & ~(alignment - 1))
+#define mp_align_ptr(p, alignment) (void *)((((size_t)p) + (alignment - 1)) & ~(alignment - 1))
 
 struct mp_large_s {
     struct mp_large_s *next;
@@ -31,12 +27,17 @@ struct mp_node_s {
  * 内存池，包含大块与小块
  */
 struct mp_pool_s {
+    struct mp_large_s *large;  // 大于4K
     size_t max;
+
     struct mp_node_s *current;
-    struct mp_large_s *large;
-    struct mp_node_s head[0];
+    struct mp_node_s head[0];  // 要在结构体的最后
 };
 
+/**
+ * @brief 创建内存池
+ * @param size 内存块大小
+ */
 struct mp_pool_s *mp_create_pool(size_t size);
 void mp_destory_pool(struct mp_pool_s *pool);
 void mp_reset_pool(struct mp_pool_s *pool);
