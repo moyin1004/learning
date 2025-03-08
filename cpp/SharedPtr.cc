@@ -30,7 +30,7 @@ public:
         SharedPtr<T> p;
         if (_cntrl) {
             int cur = _cntrl->load();
-            while (cur != -1) {
+            while (cur != 0) {
                 if (_cntrl->compare_exchange_strong(cur, cur + 1)) {
                     p._cntrl = _cntrl;
                     break;
@@ -110,7 +110,7 @@ public:
     }
 
     SharedPtr& operator=(const SharedPtr& sp) noexcept {
-        // 建立一个栈变量 相当于使用了构造函数和析构函数 不同额外定义一个引用计数加减的函数
+        // 建立一个栈变量 相当于使用了构造函数和析构函数 不用额外定义一个引用计数加减的函数
         SharedPtr(sp).swap(*this);
         return *this;
     }
