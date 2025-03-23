@@ -1,5 +1,15 @@
+# 忽略所有没有拓展名的文件
+*
+!*.*
+!*/
+
 *.out
 *.o
+*.core
+*.a
+*.so
+*.swp
+*.swo
 *.tar.gz
 *.exe
 *.docx
