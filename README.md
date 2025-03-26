@@ -13,6 +13,7 @@ TODO
     - [memory pool](./backend-series/linux/mempool/)
     - [thread pool](./backend-series/linux/threadpool/)
     - [无锁队列](./backend-series//linux/lock_free_queue/)
+    - [C实现异常处理try catch](./backend-series/linux/exception/)
 - net
     - [epoll](./backend-series/net/epoll/)
     - [websocket](./backend-series/net/websocket.c)
