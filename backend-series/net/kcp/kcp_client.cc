@@ -22,73 +22,80 @@ public:
         sockaddr_in servaddr;
         memset(&servaddr, 0, sizeof(servaddr));
         servaddr.sin_family = AF_INET;
-        servaddr.sin_addr.s_addr = INADDR_ANY;
+        servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
         servaddr.sin_port = htons(8080);
-        UUserData data;
-        data.fd = m_fd;
-        data.addr = servaddr;
-        m_listenKcp = std::make_unique<UKcp>(0x1, data);
-        m_listenKcp->Send("handshake", 10);
+        m_data.fd = m_fd;
+        m_data.addr = servaddr;
     }
     ~UKcpClient() {
         if (m_fd > 0) {
             close(m_fd);
         }
     }
-    void Run() {
-        bool trans = true;
+
+    void Send() {
         while (1) {
-            m_listenKcp->Update();
-            char buffer[MTU_SIZE] = {0};
-            sockaddr_in clientaddr;
-            memset(&clientaddr, 0, sizeof(clientaddr));
+            if (m_kcp) {
+                std::string line;
+                cin >> line;
+                printf("client send conv %d data: %s\n", m_kcp->GetConv(), line.c_str());
+                {
+                    std::lock_guard<std::mutex> lock(m_mutex);
+                    m_kcp->Send(line.c_str(), line.size());
+                }
+            }
+            this_thread::sleep_for(chrono::milliseconds(100));
+        }
+    }
+
+    void Run() {
+        UKcpOpcode op = UKcpOpcode::kHandshake;
+        sendto(m_fd, &op, sizeof(op), 0, (sockaddr*)&m_data.addr, sizeof(m_data.addr));
+        while (1) {
             socklen_t addrlen = sizeof(sockaddr_in);
-            int len = recvfrom(m_fd, buffer, sizeof(buffer), 0, (sockaddr *)&clientaddr, &addrlen);
+            char buffer[1024] = {0};
+            int len = recvfrom(m_fd, buffer, sizeof(buffer), 0, (sockaddr*)&m_data.addr, &addrlen);
             if (len > 0) {
-                sockaddr_storage addr;
-                printf("recv data %d, addr:%s\n", len,
-                       inet_ntop(AF_INET, &clientaddr, (char *)&addr, sizeof(addr)));
-                if (m_kcp) {
-                    m_kcp->Input(buffer, len);
-                    auto read = m_kcp->Revc();
-                    if (!read.empty()) {
-                        printf("ret data:%s\n", read.c_str());
-                    } else {
-                        std::string data;
-                        std::cin >> data;
-                        m_kcp->Send(data.c_str(), data.size());
+                // printf("client recvfrom fd:%d, len:%d, buf:%d\n", m_fd, len, buffer[0]);
+                if (buffer[0] == static_cast<char>(UKcpOpcode::kHandshakeRsp)) {
+                    int conv = *((int*)&buffer[1]);
+                    printf("client recv handshakersp conv:%d\n", conv);
+                    if (!m_kcp) {
+                        m_kcp = std::make_unique<UKcp>(conv, m_data);
                     }
-                } else {
-                    m_listenKcp->Input(buffer, len);
-                    std::string recv = m_listenKcp->Revc();
-                    if (recv.size() == 4) {
-                        int conv = *reinterpret_cast<int *>(recv.data());
-                        UUserData data;
-                        data.addr = clientaddr;
-                        data.fd = m_fd;
-                        printf("conn conv:%d\n", conv);
-                        m_kcp = std::make_unique<UKcp>(conv, data);
+                } else if (buffer[0] == static_cast<char>(UKcpOpcode::kData)) {
+                    if (m_kcp) {
+                        std::lock_guard<std::mutex> lock(m_mutex);
+                        m_kcp->Input(buffer, len);
+                        auto data = m_kcp->Recv();
+                        if (!data.empty()) {
+                            printf("client recv conv %d data: %s\n", m_kcp->GetConv(),
+                                   data.c_str());
+                        }
                     }
                 }
             } else if (errno == EAGAIN) {
             } else {
-                printf("recvfrom ret:%d, err:%d\n", len, errno);
+                printf("client recvfrom fd:%d, ret:%d, err:%d\n", m_fd, len, errno);
             }
             if (m_kcp) {
+                std::lock_guard<std::mutex> lock(m_mutex);
                 m_kcp->Update();
             }
+            this_thread::sleep_for(chrono::milliseconds(100));
         }
     }
 
 private:
     int m_fd;
-    int cur_conv = 0x2;
-    std::unique_ptr<UKcp> m_listenKcp;
     std::unique_ptr<UKcp> m_kcp;
+    UUserData m_data;
+    std::mutex m_mutex;
 };
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     UKcpClient client;
-    client.Run();
+    std::thread t([&client]() { client.Run(); });
+    client.Send();
     return 0;
 }
