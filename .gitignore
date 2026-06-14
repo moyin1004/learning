@@ -17,5 +17,7 @@
 *.md
 *.vscode
 !README.md
+!Makefile
+!MA
 client
 server

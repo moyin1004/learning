@@ -1,7 +1,7 @@
+#include <chrono>
 #include <cstring>
 #include <iostream>
 #include <string>
-#include <chrono>
 #include <type_traits>
 
 using namespace std;
@@ -10,26 +10,26 @@ class String {
 public:
     String() : _pstr(nullptr) {}
 
-    String(const char *pstr) : _pstr(nullptr) {
+    String(const char* pstr) : _pstr(nullptr) {
         if (pstr != nullptr) {
             _pstr = new char(strlen(pstr) + 1);
             strcpy(_pstr, pstr);
         }
     }
 
-    String(const String &rhs) : _pstr(nullptr) {
+    String(const String& rhs) : _pstr(nullptr) {
         if (rhs.size()) {
             _pstr = new char(rhs.size() + 1);
             strcpy(_pstr, rhs._pstr);
         }
     }
 
-    String(String &&rhs) : _pstr(rhs._pstr) {
+    String(String&& rhs) : _pstr(rhs._pstr) {
         rhs._pstr = nullptr;
         cout << "String(String &&)" << endl;
     }
 
-    String &operator=(const String &rhs) {
+    String& operator=(const String& rhs) {
         if (this != &rhs) {     // 防止自复制
             if (!rhs.size()) {  // 传入为空，赋空值
                 delete _pstr;
@@ -47,7 +47,7 @@ public:
         return *this;
     }
 
-    String &operator=(const char *pstr) {
+    String& operator=(const char* pstr) {
         if (pstr == nullptr) {  // 传入为空，赋空值
             delete _pstr;
             _pstr = nullptr;
@@ -64,7 +64,7 @@ public:
         return *this;
     }
 
-    String &operator=(String &&rhs) {
+    String& operator=(String&& rhs) {
         cout << "operator=(String &&)" << endl;
         if (this != &rhs) {
             delete _pstr;
@@ -74,7 +74,7 @@ public:
         return *this;
     }
 
-    char &operator[](std::size_t index) {  // C++容器中使用std::size_t更恰当
+    char& operator[](std::size_t index) {  // C++容器中使用std::size_t更恰当
         if (index < size()) {
             return _pstr[index];
         } else {
@@ -83,7 +83,7 @@ public:
         }
     }
 
-    const char &operator[](std::size_t index) const {
+    const char& operator[](std::size_t index) const {
         if (index < size()) {
             return _pstr[index];
         } else {
@@ -99,7 +99,7 @@ public:
             return strlen(_pstr);
     }
 
-    const char *c_str() const { return _pstr; }
+    const char* c_str() const { return _pstr; }
 
     ~String() {
         if (_pstr != nullptr) {
@@ -114,20 +114,20 @@ public:
             cout << _pstr << endl;
     }
 
-    friend bool operator==(const String &, const String &);
-    friend bool operator!=(const String &, const String &);
+    friend bool operator==(const String&, const String&);
+    friend bool operator!=(const String&, const String&);
 
-    friend std::ostream &operator<<(std::ostream &os, const String &s);
+    friend std::ostream& operator<<(std::ostream& os, const String& s);
 
 private:
-    char *_pstr;
+    char* _pstr;
 };
 
-bool operator==(const String &lhs, const String &rhs) { return !strcmp(lhs._pstr, rhs._pstr); }
+bool operator==(const String& lhs, const String& rhs) { return !strcmp(lhs._pstr, rhs._pstr); }
 
-bool operator!=(const String &lhs, const String &rhs) { return strcmp(lhs._pstr, rhs._pstr); }
+bool operator!=(const String& lhs, const String& rhs) { return strcmp(lhs._pstr, rhs._pstr); }
 
-std::ostream &operator<<(std::ostream &os, const String &s) {
+std::ostream& operator<<(std::ostream& os, const String& s) {
     if (s._pstr != nullptr) os << s._pstr;
     return os;
 }
@@ -138,7 +138,7 @@ String test_automove(String w) {
     for (int i = 0; i < n; ++i) {
         sum += i;
     }
-    return w; // 编译器自动优化 等价于std::move(w)
+    return w;  // 编译器自动优化 等价于std::move(w)
 }
 
 String test_rvo() {
@@ -151,36 +151,36 @@ String test_rvo() {
     return w;
 }
 
-template<typename T>
+template <typename T>
 void logAndAdd(T&& name);
 
-template<typename T>
-void logAndAddImpl(T &&name, std::false_type) {
+template <typename T>
+void logAndAddImpl(T&& name, std::false_type) {
     auto now = std::chrono::system_clock::now();
     // log();
     // names.emplace(std::forward<T>(name));
 }
 
-string nameFromIdx(int idx) {
-    return "";
-}
+string nameFromIdx(int idx) { return ""; }
 
-template<typename T>
+template <typename T>
 void logAndAddImpl(int idx, std::true_type) {
     logAndAdd(nameFromIdx(idx));
 }
 
-template<typename T>
+template <typename T>
 void logAndAdd(T&& name) {
     logAndAddImpl(std::forward<T>(name), std::is_integral<std::remove_reference_t<T>>());
 }
 
 class Person {
 public:
-    template<typename T, typename = typename std::enable_if_t<!std::is_base_of_v<Person, typename std::decay_t<T> > > >
-    explicit Person(T&& n) : name(std:::forward<T>(n)) {
+    template <typename T, typename = typename std::enable_if_t<
+                              !std::is_base_of_v<Person, typename std::decay_t<T>>>>
+    explicit Person(T&& n) : name(std::forward<T>(n)) {
         static_assert(std::is_constructible_v<std::string, T>, "n not be construct a string");
     }
+
 private:
     string name;
 };
