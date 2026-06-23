@@ -13,8 +13,15 @@ public:
     B() { std::cout << "B" << std::endl; }
 };
 
+struct Simple {
+    int data;
+};
+
 int main() {
     cout << sizeof(A) << endl;
     cout << sizeof(B) << endl;
+    Simple a;
+    Simple b;
+    // cout << (a == b) << endl;
     return 0;
 }
